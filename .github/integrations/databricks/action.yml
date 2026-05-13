@@ -1,0 +1,38 @@
+name: 'Setup Databricks CLI'
+description: 'Instala o Databricks CLI no runner para pipelines de DataOps e gestão de bundles'
+
+inputs:
+  cli_version:
+    description: 'Versão específica do Databricks CLI a ser instalada'
+    required: false
+    default: '0.219.0' 
+
+runs:
+  using: "composite"
+  steps:
+    - name: Download and Install Databricks CLI
+      shell: bash
+      run: |
+        set -e 
+        VERSION="${{ inputs.cli_version }}"
+        
+        echo "Iniciando download do Databricks CLI versão v${VERSION}..."
+        
+        curl -sfL -o databricks_cli.tar.gz \
+          "https://github.com/databricks/cli/releases/download/v${VERSION}/databricks_cli_${VERSION}_linux_amd64.tar.gz"
+        
+        echo "Extraindo binário..."
+        tar -xzf databricks_cli.tar.gz
+        
+        echo "Aplicando permissões e movendo para /usr/local/bin..."
+        chmod +x databricks
+        sudo mv databricks /usr/local/bin/databricks
+        
+        echo "Limpando arquivos temporários..."
+        rm databricks_cli.tar.gz
+
+    - name: Validate installation
+      shell: bash
+      run: |
+        echo "Validando a instalação do CLI..."
+        databricks --version
