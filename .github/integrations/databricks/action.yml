@@ -5,7 +5,7 @@ inputs:
   cli_version:
     description: 'Versão específica do Databricks CLI a ser instalada'
     required: false
-    default: '0.219.0' 
+    default: '0.299.1' 
 
 runs:
   using: "composite"
